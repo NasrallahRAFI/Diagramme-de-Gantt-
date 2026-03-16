@@ -60,11 +60,15 @@
 
   /* ═══ HEADER ═══ */
   .header {
-    padding: 30px 44px 16px;
+    padding: 30px 44px 24px;
     background: linear-gradient(180deg, rgba(96,165,250,0.06) 0%, rgba(167,139,250,0.03) 40%, transparent 100%);
     border-bottom: 1px solid var(--border);
     position: relative;
     overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
   }
   .header::before {
     content: ''; position: absolute; top: -80px; right: -40px;
@@ -92,8 +96,38 @@
     50% { background-position: 100% 50%; }
   }
   .header .subtitle {
-    font-size: 12px; color: var(--text-muted); margin-top: 6px;
-    font-weight: 400; letter-spacing: 0.2px; position: relative; z-index: 1;
+    font-size: 13px; color: var(--text-muted); margin-top: 8px;
+    font-weight: 500; letter-spacing: 0.3px; position: relative; z-index: 1;
+    display: flex; gap: 12px; align-items: center;
+  }
+  .header .subtitle span { opacity: 0.5; }
+  
+  .header .subtitle .dot { opacity: 0.3; margin: 0 4px; font-weight: 300; }
+  
+  .header-right {
+    text-align: right;
+    position: relative;
+    z-index: 2;
+  }
+  .user-name-big {
+    font-size: 38px;
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: 4px;
+    background: linear-gradient(135deg, var(--text-primary) 30%, var(--text-muted) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .user-role {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--phase-2-from);
+    opacity: 0.8;
   }
 
   /* ═══ STATS ═══ */
@@ -162,11 +196,12 @@
 
   /* ═══ GANTT WRAPPER ═══ */
   .gantt-scroll { overflow-x: auto; overflow-y: auto; max-height: calc(100vh - 210px); }
-  .gantt-container { min-width: 1500px; position: relative; overflow: visible; }
+  .gantt-container { min-width: 3200px; position: relative; overflow: visible; }
 
   /* ═══ TIMELINE HEADER (sticky) ═══ */
   .timeline-header {
     display: flex; position: sticky; top: 0; z-index: 20; background: var(--bg-primary);
+    height: 38px;
   }
   .tl-label-spacer {
     min-width: var(--label-width); flex-shrink:0;
@@ -178,23 +213,24 @@
   .tl-cells { flex:1; display:flex; position:relative; }
 
   .month-cell {
-    position:absolute; text-align:center; font-size:10px; font-weight:800;
-    text-transform:uppercase; letter-spacing:2px; color:var(--text-secondary);
-    border-bottom:1px solid var(--border); border-right:1px solid var(--border);
-    padding:9px 0 6px; background:var(--bg-secondary);
+    position:absolute; top:0; bottom:0; display:flex; align-items:center; justify-content:center;
+    font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:2px;
+    color:var(--text-secondary); border-bottom:1px solid var(--border);
+    border-right:1px solid var(--border); background:var(--bg-secondary);
+    padding-bottom: 2px; /* Slight nudge up */
   }
   .week-cell {
-    position:absolute; text-align:center; font-size:8px; font-weight:700;
-    color:var(--text-muted); border-bottom:1px solid var(--border);
-    border-right:1px solid rgba(42,47,66,0.35); padding:4px 0;
+    position:absolute; top:0; bottom:0; display:flex; align-items:center; justify-content:center;
+    font-size:10px; font-weight:700; color:var(--text-muted);
+    border-bottom:1px solid var(--border); border-right:1px solid rgba(42,47,66,0.35);
     background:var(--bg-secondary);
+    padding-bottom: 1px; /* Slight nudge up */
   }
   .day-cell {
-    position:absolute; text-align:center; font-size:8px; font-weight:400;
-    color:var(--text-muted); border-bottom:2px solid var(--border);
-    border-right:1px solid rgba(30,35,53,0.8); padding:3px 0;
-    background:var(--bg-primary);
-    transition: background 0.15s;
+    position:absolute; top:0; bottom:0; display:flex; align-items:center; justify-content:center;
+    font-size:9px; font-weight:500; color:var(--text-muted);
+    border-bottom:2px solid var(--border); border-right:1px solid rgba(30,35,53,0.8);
+    background:var(--bg-primary); transition: background 0.15s;
   }
   .day-cell.weekend { background: var(--weekend-bg); color:rgba(79,86,112,0.35); }
   .day-cell.today {
@@ -251,9 +287,11 @@
   @keyframes dotPulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
 
   .row-label {
-    min-width: var(--label-width); flex-shrink:0; display:flex; align-items:center;
+    width: var(--label-width); min-width: var(--label-width); max-width: var(--label-width);
+    flex-shrink:0; flex-grow:0; display:flex; align-items:center;
     padding: 0 16px; border-right:1px solid var(--border); font-size:12px; gap:8px;
     overflow:hidden; transition: border-color 0.2s;
+    box-sizing: border-box;
   }
   .row-label .icon { font-size:13px; flex-shrink:0; }
   .row-label .task-name {
@@ -328,7 +366,7 @@
     );
   }
 
-  .bar .bar-label { overflow:hidden; text-overflow:ellipsis; min-width:0; }
+  .bar .bar-label { overflow:hidden; text-overflow:ellipsis; min-width:0; flex: 1; }
   .bar .bar-days {
     flex-shrink:0; opacity:0.85; font-weight:600; font-size:8px;
     background: rgba(0,0,0,0.25); padding: 2px 6px; border-radius: 4px;
@@ -342,6 +380,12 @@
     background: var(--bg-card); color: var(--text-secondary);
     border: 1px solid var(--glass-border); font-size:9px; padding: 2px 7px;
     border-radius: 4px;
+  }
+  /* Medium bars: show label outside to avoid truncation */
+  .bar.medium-bar .bar-label {
+    position:absolute; left:calc(100% + 5px); top:50%; transform:translateY(-50%);
+    color: var(--text-secondary); font-size:9px; overflow:visible;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
   }
 
   /* ═══ MILESTONE ═══ */
@@ -474,6 +518,26 @@
     50% { opacity:0.8; box-shadow: 0 0 12px 2px rgba(96,165,250,0.15); }
   }
 
+  /* ═══ COMPLETED ROW INDICATOR ═══ */
+  .gantt-row.row-done .row-label .task-name {
+    text-decoration: line-through;
+    text-decoration-color: rgba(52,211,153,0.45);
+    text-decoration-thickness: 1.5px;
+    opacity: 0.65;
+  }
+  .gantt-row.row-done .row-label .dates { opacity: 0.5; }
+  .check-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(135deg, rgba(52,211,153,0.2), rgba(16,185,129,0.2));
+    border: 1px solid rgba(52,211,153,0.3);
+    font-size: 9px; color: var(--accent-green);
+    box-shadow: 0 0 8px rgba(52,211,153,0.15);
+  }
+  .sub-task .check-badge {
+    width: 15px; height: 15px; font-size: 7px;
+  }
+
   /* ═══ RESPONSIVE ═══ */
   @media (max-width: 1200px) {
     :root { --label-width: 270px; }
@@ -482,26 +546,7 @@
     .stats-bar { padding: 12px 12px; }
   }
 
-  /* ═══ PDF EXPORT BUTTON ═══ */
-  .pdf-btn {
-    position: absolute; top: 24px; right: 40px; z-index: 10;
-    display: inline-flex; align-items: center; gap: 7px;
-    padding: 9px 20px; border-radius: 10px;
-    background: linear-gradient(135deg, rgba(96,165,250,0.15), rgba(167,139,250,0.15));
-    border: 1px solid rgba(96,165,250,0.25);
-    color: var(--accent-blue); font-size: 12px; font-weight: 700;
-    font-family: 'Inter', sans-serif; cursor: pointer;
-    letter-spacing: 0.3px;
-    transition: all 0.25s ease;
-    backdrop-filter: blur(8px);
-  }
-  .pdf-btn:hover {
-    background: linear-gradient(135deg, rgba(96,165,250,0.25), rgba(167,139,250,0.25));
-    border-color: rgba(96,165,250,0.4);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(96,165,250,0.2);
-  }
-  .pdf-btn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
 
   /* ═══ PRINT / PDF STYLES ═══ */
   @media print {
@@ -570,12 +615,15 @@
 <body>
 
 <div class="header">
-  <h1>📊 Diagramme de Gantt — Projet de Fin d'Études</h1>
-  <div class="subtitle">Rafi Nasrallah · Emove Vehicles · 01 Février – 31 Mai 2026</div>
-  <button class="pdf-btn" onclick="window.print()">
-    <svg viewBox="0 0 24 24"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><line x1="9" y1="17" x2="15" y2="17"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
-    Exporter PDF
-  </button>
+  <div class="header-left">
+    <h1>📊 Diagramme de Gantt — Projet de Fin d'Études</h1>
+    <div class="subtitle">
+      01 Février – 31 Mai 2026
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="user-name-big">Rafi Nasrallah</div>
+  </div>
 </div>
 
 <div class="stats-bar" id="statsBar"></div>
@@ -584,9 +632,7 @@
   <div class="legend-item"><div class="legend-dot" style="background:linear-gradient(135deg,var(--phase-1-from),var(--phase-1-to))"></div>Phase 1 — Terminée</div>
   <div class="legend-item"><div class="legend-dot" style="background:linear-gradient(135deg,var(--phase-2-from),var(--phase-2-to))"></div>Phase 2 — En cours</div>
   <div class="legend-item"><div class="legend-dot" style="background:linear-gradient(135deg,var(--phase-3-from),var(--phase-3-to))"></div>Phase 3 — À venir</div>
-  <div class="legend-item"><div class="legend-dot" style="background:linear-gradient(135deg,var(--redac-from),var(--redac-to))"></div>Rédaction</div>
-  <div class="legend-item milestone"><div class="legend-dot"></div>Jalon clé</div>
-  <div class="legend-item today-legend"><div class="legend-dot"></div>15 mars 2026</div>
+  <div class="legend-item today-legend" id="todayLegend"><div class="legend-dot"></div></div>
 </div>
 
 <div class="gantt-scroll">
@@ -607,7 +653,8 @@
 // ═══════════════════════════════════════════════════════════════════════
 const PROJECT_START = new Date(2026, 1, 1);  // Feb 1
 const PROJECT_END   = new Date(2026, 5, 1);  // Jun 1 exclusive
-const TODAY         = new Date(2026, 2, 15); // Mar 15
+const TODAY         = new Date();
+TODAY.setHours(0,0,0,0); // Normalize to start of day
 
 const PHASES = [
   {
@@ -620,7 +667,7 @@ const PHASES = [
           { name: "1.1 Diagnostic ligne de production",     start: "2026-02-01", end: "2026-02-07" },
           { name: "1.2 Plan d'amélioration production",     start: "2026-02-05", end: "2026-02-11" },
           { name: "1.3 Diagnostic assemblage batteries",    start: "2026-02-10", end: "2026-02-15" },
-          { name: "1.4 Plan maîtrise du SOC",                   start: "2026-02-14", end: "2026-02-18" },
+          { name: "1.4 Maîtrise du SOC",                   start: "2026-02-14", end: "2026-02-18" },
         ]
       },
       { name: "Ch 2 · Optimisation Mécanique & Outillage", start: "2026-02-19", end: "2026-03-06", type: "tech",
@@ -639,23 +686,18 @@ const PHASES = [
     tasks: [
       { name: "Ch 3 · Modélisation de Batterie", start: "2026-03-07", end: "2026-03-20", type: "tech",
         subs: [
-          { name: "3.1 Caractérisation cellules Gotion LFP", start: "2026-03-07", end: "2026-03-12" },
-          { name: "3.2 Modélisation sur MATLAB/Simulink",     start: "2026-03-12", end: "2026-03-17" },
-          { name: "3.3 Validation du modèle",                 start: "2026-03-17", end: "2026-03-20" },
+          { name: "3.1 Caractérisation cellules Gotion LFP", start: "2026-03-07", end: "2026-03-12", status: "done" },
+          { name: "3.2 Modélisation sur MATLAB/Simulink",     start: "2026-03-12", end: "2026-03-17", status: "done" },
+          { name: "3.3 Validation du modèle",                 start: "2026-03-17", end: "2026-03-20", status: "active" },
         ]
       },
-      { name: "✍️ Rédaction Chapitres 1 & 2", start: "2026-03-07", end: "2026-03-20", type: "redac" },
       { name: "Ch 4 · Modélisation de BMS", start: "2026-03-21", end: "2026-03-31", type: "tech",
         subs: [
-          { name: "4.1 Architecture de contrôle",              start: "2026-03-21", end: "2026-03-23" },
-          { name: "4.2 Modélisation d'Estimation SOC",         start: "2026-03-23", end: "2026-03-25" },
-          { name: "4.3 Modélisation de Stratégie d'équilibrage", start: "2026-03-25", end: "2026-03-26" },
-          { name: "4.4 Modélisation de contrôleur",            start: "2026-03-26", end: "2026-03-28" },
-          { name: "4.5 Modélisation de gestion de sécurité",   start: "2026-03-28", end: "2026-03-29" },
-          { name: "4.6 Validation globale du modèle BMS",     start: "2026-03-29", end: "2026-03-31" },
+          { name: "4.1 Modélisation d'Estimation SOC",         start: "2026-03-21", end: "2026-03-26" },
+          { name: "4.2 Modélisation de contrôle",              start: "2026-03-26", end: "2026-03-29" },
+          { name: "4.3 Validation globale du modèle BMS",     start: "2026-03-29", end: "2026-03-31" },
         ]
       },
-      { name: "✍️ Rédaction Chapitre 3", start: "2026-03-21", end: "2026-03-31", type: "redac" },
     ]
   },
   {
@@ -663,33 +705,20 @@ const PHASES = [
     status: "upcoming", color: "p3",
     start: "2026-04-01", end: "2026-05-31",
     tasks: [
-      { name: "5.1 Conception Hardware", start: "2026-04-01", end: "2026-04-15", type: "tech",
+      { name: "5.1 Conception & Simulation Hardware", start: "2026-04-01", end: "2026-04-30", type: "tech",
         subs: [
-          { name: "Choix composants",          start: "2026-04-01", end: "2026-04-05" },
-          { name: "Schémas électriques",        start: "2026-04-05", end: "2026-04-10" },
-          { name: "Routage PCB multicouche",    start: "2026-04-10", end: "2026-04-15" },
+          { name: "5.1.1 Identification des composants critiques et Spécification des modèles", start: "2026-04-01", end: "2026-04-02" },
+          { name: "5.1.2 Conception et simulation des sous systemes hardware",           start: "2026-04-02", end: "2026-04-27" },
+          { name: "5.1.3 Validation globale",                                              start: "2026-04-27", end: "2026-04-30" },
         ]
       },
-      { name: "✍️ Rédaction Chapitre 4", start: "2026-04-01", end: "2026-04-15", type: "redac" },
-      { name: "5.2 Simulation & Validation HW", start: "2026-04-16", end: "2026-04-30", type: "tech",
-        subs: [
-          { name: "Validation circuits",        start: "2026-04-16", end: "2026-04-22" },
-          { name: "Génération fichiers Gerber",  start: "2026-04-22", end: "2026-04-30" },
-        ]
-      },
-      { name: "✍️ Rédaction Chapitre 5 – Partie 1", start: "2026-04-16", end: "2026-04-30", type: "redac" },
-      { name: "5.3 Prototypage", start: "2026-05-01", end: "2026-05-20", type: "tech" },
-      { name: "✍️ Rédaction Chapitre 5 – Partie 2", start: "2026-05-01", end: "2026-05-20", type: "redac" },
-      { name: "Tests Finaux & Validation", start: "2026-05-21", end: "2026-05-31", type: "tech" },
-      { name: "✍️ Finalisation Rapport & Intro/Conclusion", start: "2026-05-21", end: "2026-05-31", type: "redac" },
+      { name: "5.2 Prototypage", start: "2026-05-01", end: "2026-05-20", type: "tech" },
+      { name: "5.3 Tests Finaux & Validation", start: "2026-05-21", end: "2026-05-31", type: "tech" },
     ]
   }
 ];
 
-const MILESTONES = [
-  { name: "Clôture Mécanique",      date: "2026-03-06", icon: "🔒" },
-  { name: "Fin Modélisation BMS",   date: "2026-03-31", icon: "✅" },
-];
+const MILESTONES = [];
 
 // ═══════════════════════════════════════════════════════════════════════
 //  HELPERS
@@ -779,7 +808,8 @@ function buildHeader(c) {
     const end=ne>PROJECT_END?PROJECT_END:ne;
     const cell=document.createElement('div'); cell.className='week-cell';
     cell.style.cssText=`left:${toP(cur)}%;width:${toP(end)-toP(cur)}%`;
-    cell.textContent='S'+weekNum(cur); wC.appendChild(cell);
+    const wIdx = Math.floor(diffD(PROJECT_START, cur) / 7) + 1;
+    cell.textContent='S'+wIdx; wC.appendChild(cell);
     cur.setDate(cur.getDate()+7);
   }
   c.appendChild(wR);
@@ -861,6 +891,7 @@ function mkBar(startS, endS, cls, label, phaseName, isCompleted, taskStatus){
   const bar=document.createElement('div');
   bar.className=`bar ${cls}${isCompleted?' completed':''}`;
   if(w < 5.5) bar.classList.add('short-bar');
+  else if(w < 9.5) bar.classList.add('medium-bar');
   bar.style.cssText=`left:${left}%;width:${w}%;animation-delay:${barIndex * 0.03}s;`;
   barIndex++;
 
@@ -887,7 +918,8 @@ function mkBar(startS, endS, cls, label, phaseName, isCompleted, taskStatus){
 // ═══════════════════════════════════════════════════════════════════════
 //  BUILD ROWS
 // ═══════════════════════════════════════════════════════════════════════
-function getTaskStatus(startS, endS) {
+function getTaskStatus(startS, endS, manualStatus) {
+  if(manualStatus) return manualStatus;
   const s=pd(startS), e=pd(endS);
   if(TODAY > e) return 'done';
   if(TODAY >= s && TODAY <= e) return 'active';
@@ -931,14 +963,15 @@ function buildRows(c){
     phase.tasks.forEach(task=>{
       const cc=task.type==='redac'?'redac':phase.color;
       const icon=task.type==='redac'?'📝':'🔧';
-      const tStatus = isDone ? 'done' : getTaskStatus(task.start, task.end);
+      const tStatus = isDone ? 'done' : getTaskStatus(task.start, task.end, task.status);
 
-      const row=document.createElement('div');row.className='gantt-row phase-child';
+      const row=document.createElement('div');row.className=`gantt-row phase-child${tStatus==='done'?' row-done':''}`;
       row.dataset.parent=phaseId;
       row.style.animationDelay = (rowIdx * 0.02)+'s'; rowIdx++;
       const lbl=document.createElement('div');lbl.className='row-label';
       const dot=document.createElement('span');dot.className=`status-dot ${tStatus}`;
       lbl.appendChild(dot);
+      if(tStatus==='done'){ const chk=document.createElement('span');chk.className='check-badge';chk.textContent='✓';lbl.appendChild(chk); }
       lbl.innerHTML+=`<span class="icon">${icon}</span><span class="task-name">${task.name}</span><span class="dates">${fmtShort(pd(task.start))} → ${fmtShort(pd(task.end))}</span>`;
       row.appendChild(lbl);
 
@@ -950,13 +983,14 @@ function buildRows(c){
       // Sub-tasks
       if(task.subs){
         task.subs.forEach(sub=>{
-          const sStatus = isDone ? 'done' : getTaskStatus(sub.start, sub.end);
-          const sR=document.createElement('div');sR.className='gantt-row sub-task phase-child';
+          const sStatus = isDone ? 'done' : getTaskStatus(sub.start, sub.end, sub.status);
+          const sR=document.createElement('div');sR.className=`gantt-row sub-task phase-child${sStatus==='done'?' row-done':''}`;
           sR.dataset.parent=phaseId;
           sR.style.animationDelay = (rowIdx * 0.02)+'s'; rowIdx++;
           const sL=document.createElement('div');sL.className='row-label';
           const sDot=document.createElement('span');sDot.className=`status-dot ${sStatus}`;
           sL.appendChild(sDot);
+          if(sStatus==='done'){ const chk=document.createElement('span');chk.className='check-badge';chk.textContent='✓';sL.appendChild(chk); }
           sL.innerHTML+=`<span class="task-name">${sub.name}</span><span class="dates">${fmtShort(pd(sub.start))}</span>`;
           sR.appendChild(sL);
 
@@ -1026,6 +1060,10 @@ const gantt=document.getElementById('gantt');
 buildHeader(gantt);
 buildRows(gantt);
 addGlobalTodayLine(gantt);
+
+// Update legend date
+const options = { day: 'numeric', month: 'long', year: 'numeric' };
+document.getElementById('todayLegend').innerHTML += TODAY.toLocaleDateString('fr-FR', options);
 </script>
 
 </body>
