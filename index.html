@@ -105,7 +105,9 @@
   .header .subtitle .dot { opacity: 0.3; margin: 0 4px; font-weight: 300; }
   
   .header-right {
-    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
     position: relative;
     z-index: 2;
   }
@@ -113,14 +115,43 @@
     font-size: 38px;
     font-weight: 900;
     letter-spacing: -1.5px;
-    color: var(--text-primary);
-    line-height: 1;
-    margin-bottom: 4px;
-    background: linear-gradient(135deg, var(--text-primary) 30%, var(--text-muted) 100%);
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple), var(--accent-cyan));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+  .btn-export {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 7px 14px;
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+    margin-top: 10px;
+    backdrop-filter: blur(10px);
+  }
+  .btn-export:hover {
+    background: rgba(96,165,250,0.1);
+    border-color: rgba(96,165,250,0.4);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  .btn-export svg {
+    width: 14px;
+    height: 14px;
+    stroke: var(--accent-blue);
+    stroke-width: 2.5;
+  }
+
   .user-role {
     font-size: 11px;
     font-weight: 700;
@@ -549,68 +580,7 @@
 
 
 
-  /* ═══ PRINT / PDF STYLES ═══ */
-  @media print {
-    @page {
-      size: landscape;
-      margin: 8mm;
-    }
-    * { animation: none !important; transition: none !important; }
-    body {
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-      color-adjust: exact !important;
-      background: var(--bg-primary) !important;
-      min-height: auto;
-    }
-    .pdf-btn, .tooltip { display: none !important; }
-    .gantt-scroll {
-      overflow: visible !important;
-      max-height: none !important;
-    }
-    .gantt-container {
-      min-width: 0 !important;
-      width: 100% !important;
-    }
-    .header { padding: 12px 20px 8px; break-after: avoid; }
-    .header h1 {
-      font-size: 18px;
-      background: none !important;
-      -webkit-text-fill-color: var(--accent-blue) !important;
-      color: var(--accent-blue) !important;
-    }
-    .header .subtitle { font-size: 10px; }
-    .stats-bar { padding: 8px 10px; break-after: avoid; }
-    .stat-item { padding: 8px 12px 6px; }
-    .stat-ring-wrap { width: 40px; height: 40px; }
-    .stat-ring { width: 40px; height: 40px; }
-    .stat-ring-value { font-size: 11px; }
-    .stat-label { font-size: 7px; }
-    .legend-bar { padding: 6px 20px; break-after: avoid; }
-    .legend-item { font-size: 9px; }
-    .timeline-header { position: static !important; }
-    .gantt-row {
-      min-height: 28px !important; break-inside: avoid;
-    }
-    .gantt-row.sub-task { min-height: 24px !important; }
-    .gantt-row.phase-header { min-height: 32px !important; }
-    .gantt-row.phase-child.collapsed {
-      min-height: 0 !important; height: 0 !important;
-      display: none !important;
-    }
-    .bar { top: 4px; bottom: 4px; box-shadow: none; font-size: 8px; }
-    .bar .bar-days { font-size: 7px; padding: 1px 4px; }
-    .row-label { font-size: 10px; }
-    .row-label .dates { font-size: 8px; }
-    .sub-task .row-label .task-name { font-size: 9px; }
-    .today-line-global { box-shadow: none; }
-    .today-label-tag { font-size: 7px; padding: 1px 5px; }
-    .milestone-marker { box-shadow: none; width: 10px; height: 10px; }
-    .milestone-label { font-size: 8px; }
-    .progress-badge { font-size: 8px; padding: 2px 8px; }
-    .collapse-arrow { display: none; }
-    ::-webkit-scrollbar { display: none; }
-  }
+  /* ═══ PRINT / PDF STYLES — handled via JS triggerPrint() below ═══ */
 
   /* ═══ MOBILE OPTIMIZATIONS ═══ */
   @media (max-width: 768px) {
@@ -631,6 +601,48 @@
     }
     .header h1 { font-size: 18px; }
     .user-name-big { font-size: 24px; }
+    .btn-export { padding: 5px 10px; font-size: 9px; }
+  }
+
+  /* ═══ PRINT STYLES ═══ */
+  @media print {
+    @page { size: A4 landscape; margin: 6mm; }
+    * { animation: none !important; transition: none !important; }
+    body {
+      background: #080a10 !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      min-height: auto !important;
+      overflow: visible !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    .btn-export, .collapse-arrow, .tooltip { display: none !important; }
+    .header { padding: 6px 14px !important; break-after: avoid; }
+    .header h1 {
+      font-size: 14px !important;
+      background: none !important;
+      -webkit-text-fill-color: var(--accent-blue) !important;
+      color: var(--accent-blue) !important;
+    }
+    .user-name-big { font-size: 18px !important; }
+    .stats-bar { display: none !important; }
+    .legend-bar { padding: 3px 12px !important; gap: 12px !important; break-after: avoid; }
+    .legend-item { font-size: 9px !important; }
+    /* JS sets overflow/max-height/zoom inline before print */
+    .gantt-scroll {
+      overflow: visible !important;
+      height: auto !important;
+      max-height: none !important;
+    }
+    /* zoom is set inline by JS — it collapses layout unlike transform */
+    .gantt-row {
+      break-inside: avoid !important;
+      page-break-inside: avoid !important;
+    }
+    .timeline-header { position: static !important; }
+    .bar { box-shadow: none !important; }
+    ::-webkit-scrollbar { display: none; }
   }
 </style>
 </head>
@@ -645,6 +657,10 @@
   </div>
   <div class="header-right">
     <div class="user-name-big">Rafi Nasrallah</div>
+    <button class="btn-export" onclick="triggerPrint()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+      <span>Télécharger en PDF</span>
+    </button>
   </div>
 </div>
 
@@ -1094,6 +1110,72 @@ addGlobalTodayLine(gantt);
 // Update legend date
 const options = { day: 'numeric', month: 'long', year: 'numeric' };
 document.getElementById('todayLegend').innerHTML += TODAY.toLocaleDateString('fr-FR', options);
+
+function triggerPrint() {
+  // ── Hide collapse arrows for print ────────────────────────────────────
+  document.querySelectorAll('.collapse-arrow').forEach(a => a.style.display = 'none');
+
+  const scrollWrapper = document.querySelector('.gantt-scroll');
+  const container     = document.getElementById('gantt');
+
+  // ── Snapshot original inline styles ───────────────────────────────────
+  const origWrapper = {
+    overflow:  scrollWrapper.style.overflow,
+    maxHeight: scrollWrapper.style.maxHeight,
+    height:    scrollWrapper.style.height,
+    width:     scrollWrapper.style.width,
+  };
+  const origContainer = {
+    zoom:     container.style.zoom,
+    minWidth: container.style.minWidth,
+    width:    container.style.width,
+  };
+  const origBody = { overflow: document.body.style.overflow };
+
+  // ── Measure the natural rendered size BEFORE any scaling ──────────────
+  // A4 landscape @ 96 dpi printable area ≈ 269mm = ~1020px (after 6mm margins each side)
+  const PAGE_W = 1020;
+
+  // scrollWidth gives the full internal width even inside a scroll container
+  const naturalW = container.scrollWidth;
+  const zoomLevel = PAGE_W / naturalW;   // e.g. 1020 / 3200 ≈ 0.319
+
+  // ── Apply zoom inline (zoom shrinks both layout AND visual size) ───────
+  // This is key: CSS transform does NOT affect layout; zoom DOES.
+  container.style.zoom     = zoomLevel;
+  container.style.minWidth = naturalW + 'px';
+  container.style.width    = naturalW + 'px';
+
+  // Scroll wrapper must be visible and sized to the zoomed height
+  const zoomedH = Math.ceil(container.scrollHeight * zoomLevel);
+  scrollWrapper.style.overflow  = 'visible';
+  scrollWrapper.style.maxHeight = 'none';
+  scrollWrapper.style.height    = zoomedH + 'px';
+  scrollWrapper.style.width     = PAGE_W + 'px';
+
+  document.body.style.overflow = 'visible';
+
+  // ── Open print dialog ─────────────────────────────────────────────────
+  setTimeout(() => {
+    window.print();
+
+    // ── Restore everything after dialog is dismissed ──────────────────
+    setTimeout(() => {
+      document.querySelectorAll('.collapse-arrow').forEach(a => a.style.display = '');
+
+      container.style.zoom     = origContainer.zoom;
+      container.style.minWidth = origContainer.minWidth;
+      container.style.width    = origContainer.width;
+
+      scrollWrapper.style.overflow  = origWrapper.overflow;
+      scrollWrapper.style.maxHeight = origWrapper.maxHeight;
+      scrollWrapper.style.height    = origWrapper.height;
+      scrollWrapper.style.width     = origWrapper.width;
+
+      document.body.style.overflow = origBody.overflow;
+    }, 600);
+  }, 150);
+}
 </script>
 
 </body>
