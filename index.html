@@ -35,7 +35,7 @@
     --redac-from: #7c3aed; --redac-to: #a78bfa;
     --row-height: 36px;
     --sub-row-height: 32px;
-    --label-width: 370px;
+    --label-width: 480px;
     --glass-bg: rgba(22,26,38,0.75);
     --glass-border: rgba(255,255,255,0.06);
   }
@@ -295,8 +295,9 @@
   }
   .row-label .icon { font-size:13px; flex-shrink:0; }
   .row-label .task-name {
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    white-space:normal; line-height: 1.35;
     font-weight:500; color:var(--text-primary); flex:1;
+    padding: 6px 0;
   }
   .phase-header .row-label .task-name { font-weight:800; font-size:13px; letter-spacing:-0.3px; }
   .row-label .dates {
@@ -610,6 +611,27 @@
     .collapse-arrow { display: none; }
     ::-webkit-scrollbar { display: none; }
   }
+
+  /* ═══ MOBILE OPTIMIZATIONS ═══ */
+  @media (max-width: 768px) {
+    :root {
+      --label-width: 180px; /* Smaller label on literal phone screens to see some chart */
+    }
+    .row-label { 
+      padding: 0 8px; font-size: 11px;
+    }
+    .row-label .task-name {
+      font-size: 10px;
+    }
+    .sub-task .row-label {
+      padding-left: 24px;
+    }
+    .sub-task .row-label::before, .sub-task .row-label::after {
+      left: 14px;
+    }
+    .header h1 { font-size: 18px; }
+    .user-name-big { font-size: 24px; }
+  }
 </style>
 </head>
 <body>
@@ -694,7 +716,7 @@ const PHASES = [
       { name: "Ch 4 · Modélisation de BMS", start: "2026-03-21", end: "2026-03-31", type: "tech",
         subs: [
           { name: "4.1 Modélisation d'Estimation SOC",         start: "2026-03-21", end: "2026-03-26" },
-          { name: "4.2 Modélisation de contrôle",              start: "2026-03-26", end: "2026-03-29" },
+          { name: "4.2 Modélisation d'estimation, équilibrage et sécurité", start: "2026-03-26", end: "2026-03-29" },
           { name: "4.3 Validation globale du modèle BMS",     start: "2026-03-29", end: "2026-03-31" },
         ]
       },
@@ -745,13 +767,22 @@ function buildStats() {
   const elapsed = diffD(PROJECT_START, TODAY);
   const remaining = diffD(TODAY, PROJECT_END);
   const pct = Math.round((elapsed / totalDays) * 100);
-  const R = 21, C = 2 * Math.PI * R; // ring radius & circumference
+  const R = 21, C = 2 * Math.PI * R;
+
+  const p2Start = new Date(2026, 2, 7);
+  const p2End   = new Date(2026, 2, 31);
+  let p2Elapsed = 0;
+  if (TODAY >= p2Start) {
+    p2Elapsed = diffD(p2Start, TODAY > p2End ? p2End : TODAY);
+  }
+  const p2Total = diffD(p2Start, p2End);
+  const p2Pct = Math.round((p2Elapsed / p2Total) * 100);
 
   const items = [
-    { value: '34', label: 'Jours terminés', color: '#34d399', stroke: '#059669', pct: 100 },
-    { value: '9', label: 'Jours Phase 2', color: '#60a5fa', stroke: '#2563eb', pct: Math.round(9/25*100) },
-    { value: remaining.toString(), label: 'Jours restants', color: '#fb923c', stroke: '#ea580c', pct: Math.round(remaining/totalDays*100) },
-    { value: pct+'%', label: 'Progression globale', color: '#a78bfa', stroke: '#7c3aed', pct: pct },
+    { value: elapsed.toString(), label: 'Jours terminés', color: '#34d399', stroke: '#059669', pct: Math.min(100, Math.max(0, pct)) },
+    { value: p2Elapsed.toString(), label: 'Jours Phase 2', color: '#60a5fa', stroke: '#2563eb', pct: Math.min(100, p2Pct) },
+    { value: Math.max(0, remaining).toString(), label: 'Jours restants', color: '#fb923c', stroke: '#ea580c', pct: Math.min(100, Math.max(0, Math.round(remaining/totalDays*100))) },
+    { value: Math.min(100, Math.max(0, pct))+'%', label: 'Progression globale', color: '#a78bfa', stroke: '#7c3aed', pct: Math.min(100, Math.max(0, pct)) },
   ];
 
   const bar = document.getElementById('statsBar');
