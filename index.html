@@ -722,16 +722,16 @@ const PHASES = [
     status: "active", color: "p2",
     start: "2026-03-07", end: "2026-03-31",
     tasks: [
-      { name: "Ch 3 · Modélisation de Batterie", start: "2026-03-07", end: "2026-03-20", type: "tech",
+      { name: "Ch 3 · Modélisation de Batterie", start: "2026-03-07", end: "2026-03-20", type: "tech", status: "done",
         subs: [
           { name: "3.1 Caractérisation cellules Gotion LFP", start: "2026-03-07", end: "2026-03-12", status: "done" },
           { name: "3.2 Modélisation sur MATLAB/Simulink",     start: "2026-03-12", end: "2026-03-17", status: "done" },
-          { name: "3.3 Validation du modèle",                 start: "2026-03-17", end: "2026-03-20", status: "active" },
+          { name: "3.3 Validation du modèle",                 start: "2026-03-17", end: "2026-03-20", status: "done" },
         ]
       },
-      { name: "Ch 4 · Modélisation de BMS", start: "2026-03-21", end: "2026-03-31", type: "tech",
+      { name: "Ch 4 · Modélisation de BMS", start: "2026-03-21", end: "2026-03-31", type: "tech", status: "active",
         subs: [
-          { name: "4.1 Modélisation d'estimation SOC, équilibrage et sécurité", start: "2026-03-21", end: "2026-03-29" },
+          { name: "4.1 Modélisation d'estimation SOC, équilibrage et sécurité", start: "2026-03-21", end: "2026-03-29", status: "active" },
           { name: "4.2 Validation globale du modèle BMS",     start: "2026-03-29", end: "2026-03-31" },
         ]
       },
@@ -917,7 +917,7 @@ function addGlobalTodayLine(ganttEl){
   // Add label tag
   const tag = document.createElement('div');
   tag.className = 'today-label-tag';
-  tag.textContent = '15 MARS';
+  tag.textContent = TODAY.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }).toUpperCase();
   line.appendChild(tag);
 
   ganttEl.appendChild(line);
