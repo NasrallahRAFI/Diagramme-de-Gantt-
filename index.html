@@ -779,24 +779,27 @@ const countWD = (s,e) => { let a=pd(s),b=pd(e),c=0; while(a<=b){if(!isWE(a))c++;
 //  STATS BAR
 // ═══════════════════════════════════════════════════════════════════════
 function buildStats() {
-  const elapsed = diffD(PROJECT_START, TODAY);
-  const remaining = diffD(TODAY, PROJECT_END);
+  // On inclut le jour en cours dès qu'il arrive (+1) et on borne entre 0 et le maximum
+  let elapsedRaw = diffD(PROJECT_START, TODAY) + 1;
+  const elapsed = Math.max(0, Math.min(elapsedRaw, totalDays));
+  
+  const remaining = Math.max(0, totalDays - elapsed);
   const pct = Math.round((elapsed / totalDays) * 100);
   const R = 21, C = 2 * Math.PI * R;
 
   const p2Start = new Date(2026, 2, 7);
   const p2End   = new Date(2026, 2, 31);
+  const p2Total = diffD(p2Start, p2End) + 1;
   let p2Elapsed = 0;
   if (TODAY >= p2Start) {
-    p2Elapsed = diffD(p2Start, TODAY > p2End ? p2End : TODAY);
+    p2Elapsed = diffD(p2Start, TODAY >= p2End ? p2End : TODAY) + 1;
   }
-  const p2Total = diffD(p2Start, p2End);
   const p2Pct = Math.round((p2Elapsed / p2Total) * 100);
 
   const items = [
     { value: elapsed.toString(), label: 'Jours terminés', color: '#34d399', stroke: '#059669', pct: Math.min(100, Math.max(0, pct)) },
-    { value: p2Elapsed.toString(), label: 'Jours Phase 2', color: '#60a5fa', stroke: '#2563eb', pct: Math.min(100, p2Pct) },
-    { value: Math.max(0, remaining).toString(), label: 'Jours restants', color: '#fb923c', stroke: '#ea580c', pct: Math.min(100, Math.max(0, Math.round(remaining/totalDays*100))) },
+    { value: p2Elapsed.toString(), label: 'Jours Phase 2', color: '#60a5fa', stroke: '#2563eb', pct: Math.min(100, Math.max(0, p2Pct)) },
+    { value: remaining.toString(), label: 'Jours restants', color: '#fb923c', stroke: '#ea580c', pct: Math.min(100, Math.max(0, Math.round((remaining/totalDays)*100))) },
     { value: Math.min(100, Math.max(0, pct))+'%', label: 'Progression globale', color: '#a78bfa', stroke: '#7c3aed', pct: Math.min(100, Math.max(0, pct)) },
   ];
 
@@ -965,29 +968,30 @@ function mkBar(startS, endS, cls, label, phaseName, isCompleted, taskStatus){
 //  BUILD ROWS
 // ═══════════════════════════════════════════════════════════════════════
 function getTaskStatus(startS, endS, manualStatus) {
-  if(manualStatus) return manualStatus;
   const s=pd(startS), e=pd(endS);
-  if(TODAY > e) return 'done';
-  if(TODAY >= s && TODAY <= e) return 'active';
+  if(TODAY >= e || manualStatus === 'done') return 'done';
+  if(manualStatus) return manualStatus;
+  if(TODAY >= s && TODAY < e) return 'active';
   return 'upcoming';
 }
 
 function buildRows(c){
   let rowIdx = 0;
   PHASES.forEach(phase=>{
-    const isDone = phase.status==='done';
+    const phaseStatus = getTaskStatus(phase.start, phase.end, phase.status);
+    const isDone = phaseStatus==='done';
     const phaseId = 'phase-'+phase.color;
     // Phase header
     const phR=document.createElement('div');
-    phR.className=`gantt-row phase-header phase-${phase.status}`;
+    phR.className=`gantt-row phase-header phase-${phaseStatus}`;
     phR.dataset.phaseId=phaseId;
     phR.style.animationDelay = (rowIdx * 0.02)+'s'; rowIdx++;
     const phL=document.createElement('div');phL.className='row-label';
     const arrow=document.createElement('span'); arrow.className='collapse-arrow'; arrow.textContent='▾';
     phL.appendChild(arrow);
     const badge=document.createElement('span');
-    badge.className=`progress-badge ${phase.status}`;
-    badge.textContent=phase.status==='done'?'✅ Terminé':phase.status==='active'?'🔄 En cours':'⏳ À venir';
+    badge.className=`progress-badge ${phaseStatus}`;
+    badge.textContent=phaseStatus==='done'?'✅ Terminé':phaseStatus==='active'?'🔄 En cours':'⏳ À venir';
     const nameSpan=document.createElement('span'); nameSpan.className='task-name'; nameSpan.textContent=phase.name;
     phL.appendChild(nameSpan);
     phL.appendChild(badge);
@@ -995,7 +999,7 @@ function buildRows(c){
 
     const phC=document.createElement('div');phC.className='row-chart';
     addBG(phC);
-    phC.appendChild(mkBar(phase.start,phase.end,`${phase.color} phase-bar`,'',phase.name,false,phase.status));
+    phC.appendChild(mkBar(phase.start,phase.end,`${phase.color} phase-bar`,'',phase.name,false,phaseStatus));
     phR.appendChild(phC); c.appendChild(phR);
 
     // Collapse toggle
