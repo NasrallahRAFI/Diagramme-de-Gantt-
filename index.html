@@ -787,18 +787,18 @@ function buildStats() {
   const pct = Math.round((elapsed / totalDays) * 100);
   const R = 21, C = 2 * Math.PI * R;
 
-  const p2Start = new Date(2026, 2, 7);
-  const p2End   = new Date(2026, 2, 31);
-  const p2Total = diffD(p2Start, p2End) + 1;
-  let p2Elapsed = 0;
-  if (TODAY >= p2Start) {
-    p2Elapsed = diffD(p2Start, TODAY >= p2End ? p2End : TODAY) + 1;
+  const p3Start = new Date(2026, 3, 1);
+  const p3End   = new Date(2026, 4, 31);
+  const p3Total = diffD(p3Start, p3End) + 1;
+  let p3Elapsed = 0;
+  if (TODAY >= p3Start) {
+    p3Elapsed = diffD(p3Start, TODAY >= p3End ? p3End : TODAY) + 1;
   }
-  const p2Pct = Math.round((p2Elapsed / p2Total) * 100);
+  const p3Pct = Math.round((p3Elapsed / p3Total) * 100);
 
   const items = [
     { value: elapsed.toString(), label: 'Jours terminés', color: '#34d399', stroke: '#059669', pct: Math.min(100, Math.max(0, pct)) },
-    { value: p2Elapsed.toString(), label: 'Jours Phase 2', color: '#60a5fa', stroke: '#2563eb', pct: Math.min(100, Math.max(0, p2Pct)) },
+    { value: p3Elapsed.toString(), label: 'Jours Phase 3', color: '#fb923c', stroke: '#ea580c', pct: Math.min(100, Math.max(0, p3Pct)) },
     { value: remaining.toString(), label: 'Jours restants', color: '#fb923c', stroke: '#ea580c', pct: Math.min(100, Math.max(0, Math.round((remaining/totalDays)*100))) },
     { value: Math.min(100, Math.max(0, pct))+'%', label: 'Progression globale', color: '#a78bfa', stroke: '#7c3aed', pct: Math.min(100, Math.max(0, pct)) },
   ];
